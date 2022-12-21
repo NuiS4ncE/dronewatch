@@ -1,25 +1,36 @@
-import logo from './logo.svg';
 import './App.css';
+import getInfo from './services/drones.js'
+//import Axios from 'axios'
 
-function App() {
+//Axios.defaults.baseURL = "https://assignments.reaktor.com/birdnest"
+const App = () => {
+  const wat = getInfo()
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <>
+      <DroneData data={wat}/>
+      <Footer />
+    </>
+  )
+}
+
+const Footer = () => {
+  
+  return (
+    <div>
+      This app is for a summer trainee pre-assignment. 
     </div>
-  );
+  )
+}
+
+const DroneData = (props) => {
+
+  return (
+    <div>
+      <p>
+        {props.data}
+      </p>
+    </div>
+  )
 }
 
 export default App;

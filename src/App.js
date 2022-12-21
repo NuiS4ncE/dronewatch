@@ -1,34 +1,40 @@
 import './App.css';
-import getInfo from './services/drones.js'
-//import Axios from 'axios'
+import { useState, useEffect } from 'react'
+import Drone from './components/Drone'
+import axios from 'axios'
+import droneService from './services/drones'
+import pilotService from './services/pilots'
 
-//Axios.defaults.baseURL = "https://assignments.reaktor.com/birdnest"
+axios.defaults.baseURL = "localhost:3001/api"
 const App = () => {
-  const wat = getInfo()
+  console.log("App rendering")
+  
   return (
     <>
-      <DroneData data={wat}/>
+      <DroneData />
       <Footer />
     </>
   )
 }
 
 const Footer = () => {
-  
+  console.log("Footer rendering")
   return (
     <div>
-      This app is for a summer trainee pre-assignment. 
+      This app is for a summer trainee pre-assignment.
     </div>
   )
 }
 
-const DroneData = (props) => {
+const DroneData = () => {
+  const [drones, setDrones] = useState([])
 
+  
   return (
     <div>
-      <p>
-        {props.data}
-      </p>
+      <ul>
+
+      </ul>
     </div>
   )
 }

@@ -5,10 +5,8 @@ import axios from 'axios'
 import droneService from './services/drones'
 import pilotService from './services/pilots'
 
-axios.defaults.baseURL = "localhost:3001/api"
 const App = () => {
   console.log("App rendering")
-  
   return (
     <>
       <DroneData />
@@ -28,13 +26,29 @@ const Footer = () => {
 
 const DroneData = () => {
   const [drones, setDrones] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  
+  console.log("In DroneData next useEffect")
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        console.log("Beginning of try")
+        const response = await droneService.getInfo()
+        console.log(response)
+        setDrones(response)
+        setLoading(false)
+      } catch (error) {
+        console.error(error)
+      }
+    } fetchData()
+  }, [])
+
+  if (loading) {
+    return <p>Loading..</p>
+  }
   return (
     <div>
-      <ul>
-
-      </ul>
+      <pre>{JSON.stringify(drones, null, 2)} </pre>
     </div>
   )
 }

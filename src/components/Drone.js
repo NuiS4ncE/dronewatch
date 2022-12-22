@@ -1,16 +1,29 @@
 import React from 'react'
-//import { Route } from 'react-router-dom'
-//import droneService from '../services/drones.js'
+import { Route } from 'react-router-dom'
+import droneService from '../services/drones'
 
-//class Drone extends React.Component {
+class Drone extends React.Component {
 
-//} 
+    state = {
+        drones: []
+    }
 
-const Drone = ({ drone }) => {
-    return (
-        <li>{drone.content}</li>
-    )
-}
+    componentWillMount = async () => {
+        const drones = await droneService.getInfo()
+        this.setState({ drones }) 
+    }
+
+    render() {
+        return (
+            <div>
+                <ul>
+                    {this.state.drones}
+                </ul>
+            </div>
+        )
+    }
+
+} 
 
 
-export default Drone
+export default Drone 

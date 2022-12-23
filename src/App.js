@@ -27,7 +27,7 @@ const Footer = () => {
 const DroneData = () => {
   const [drones, setDrones] = useState([])
   const [loading, setLoading] = useState(true)
-
+// {drones: response.report.capture.drone}
   console.log("In DroneData next useEffect")
   useEffect(() => {
     async function fetchData() {
@@ -35,7 +35,7 @@ const DroneData = () => {
         console.log("Beginning of try")
         const response = await droneService.getInfo()
         console.log(response)
-        setDrones(response)
+        setDrones( response )
         setLoading(false)
       } catch (error) {
         console.error(error)

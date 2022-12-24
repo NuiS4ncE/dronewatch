@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
+import { initializeDrone } from '../reducers/drone'
 import droneService from '../services/drones'
 
 class Drone extends React.Component {
@@ -10,7 +11,10 @@ class Drone extends React.Component {
 
     componentWillMount = async () => {
         const drones = await droneService.getInfo()
-        this.setState({ drones }) 
+        //this.setState({ drones })
+        this.props.store.dispatch(initializeDrone(drones))
+        
+        //const violators = await droneService.
     }
 
     render() {

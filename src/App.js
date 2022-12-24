@@ -9,6 +9,7 @@ const App = () => {
   console.log("App rendering")
   return (
     <>
+      <Header />
       <DroneData />
       <Footer />
     </>
@@ -24,18 +25,27 @@ const Footer = () => {
   )
 }
 
+const Header = () => {
+  return (
+    <header className="header">
+      <h1>Dronewatch</h1>
+    </header>
+  )
+}
+
+
 const DroneData = () => {
   const [drones, setDrones] = useState([])
   const [loading, setLoading] = useState(true)
-// {drones: response.report.capture.drone}
-  console.log("In DroneData next useEffect")
+  // {drones: response.report.capture.drone}
+  //console.log("In DroneData next useEffect")
   useEffect(() => {
     async function fetchData() {
       try {
-        console.log("Beginning of try")
-        const response = await droneService.getInfo()
-        console.log(response)
-        setDrones( response )
+        //console.log("Beginning of try")
+        const response = await droneService.getViolatorDrones()
+        //console.log(response)
+        setDrones(response)
         setLoading(false)
       } catch (error) {
         console.error(error)
@@ -47,9 +57,46 @@ const DroneData = () => {
     return <p>Loading..</p>
   }
   return (
-    <div>
-      <pre>{JSON.stringify(drones, null, 2)} </pre>
-    </div>
+    <>
+
+      <div className="drones-container">
+        <h3>Drones violating nest currently:</h3>
+        {drones.map((data, key) => {
+          return (
+            <div key={key}>
+              <DronesLayout
+                key={key}
+                serialNumber={data.serialNumber._text}
+                model={data.model._text}
+              />
+            </div>
+          )
+        })}
+      </div>
+    </>
+  )
+}
+
+const DronesLayout = ({ serialNumber, model }) => {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th> Serial number </th>
+          <th> Model name </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <h5>{serialNumber}</h5>
+          </td>
+          <td>
+            <h5>{model}</h5>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   )
 }
 

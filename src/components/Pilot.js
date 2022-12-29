@@ -3,34 +3,65 @@ import { Route } from 'react-router-dom'
 import { initializePilot } from '../reducers/pilot'
 import pilotService from '../services/pilots'
 
-
 class Pilot extends React.Component {
 
     constructor(props) {
         super(props);
     }
-    componentWillMount = async () => {
+
+    state = {
+        pilots: []
+    }
+    componentDidMount = async () => {
         const responses = []
-        for (let i = 0; i < this.props.length; i++) {
-        responses.push(await pilotService.getInfoOf(this.props.serialNumber._text))
+        console.log("props in cWM: " + JSON.stringify(this.props.props))
+        for (let i = 0; i < this.props.props.length; i++) {
+            responses.push(await pilotService.getInfoOf(this.props.props[i].serialNumber._text))
         }
-        this.props.store.dispatch(initializePilot(responses))
-        
+        this.setState({ responses })
     }
 
-    
-
     render() {
-        if (this.props.store.getState().pilot.info == null) {
-            return null
-        }
-        const pilot = this.props.store.getState().pilot.info
         return (
-            <div>
-                <ul>
-                    {pilot.firstName}
-                </ul>
-            </div>
+            <>
+                <div className="drones-container">
+                    <h3>Violating pilots' information:</h3>
+                    {this.state.pilots.map((data, key) => {
+                        return (
+                            <div key={key}>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th> First name </th>
+                                            <th> Last name </th>
+                                            <th> Phone number </th>
+                                            <th> Email </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <h5>{data.lastName}</h5>
+                                            </td>
+                                            <td>
+                                                <h5>{data.firstName}</h5>
+                                            </td>
+                                            <td>
+                                                <h5>{data.phoneNumber}</h5>
+                                            </td>
+                                            <td>
+                                                <h5>{data.email}</h5>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        )
+                    })}
+                </div>
+            </>
         )
     }
 }
+
+export default Pilot

@@ -2,6 +2,7 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import { initializeDrone, initializeViolators } from '../reducers/drone'
 import droneService from '../services/drones'
+import Pilot from './Pilot'
 
 class Drone extends React.Component {
 
@@ -19,6 +20,7 @@ class Drone extends React.Component {
             const violators = await droneService.getViolatorDrones()
             this.setState({ violators })
         }, 2000)
+        console.log("violators: " + JSON.stringify(this.state.violators))
         this.setState({ loading: false })
     }
 
@@ -32,6 +34,7 @@ class Drone extends React.Component {
         }
         return (
             <>
+            <Pilot props={this.state.violators}/>
                 <div className="drones-container">
                     <h3>Drones violating nest currently:</h3>
                     {this.state.violators.map((data, key) => {

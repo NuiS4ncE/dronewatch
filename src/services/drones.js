@@ -27,5 +27,16 @@ const getViolatorDrones = async () => {
     }
 }
 
+const getPilotInfo = async (serNum) => {
+    try {
+        const url = `${process.env.REACT_APP_API_URL}/pilots/${serNum}`
+        const result = await axios.get(url)
+        return result.data
+    } catch (ex) {
+        console.log(ex)
+    }
+}
 
-export default { getInfo, getViolatorDrones }
+const exportedDrones = { getInfo, getViolatorDrones, getPilotInfo }
+
+export default exportedDrones

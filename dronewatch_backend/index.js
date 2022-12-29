@@ -43,6 +43,18 @@ app.get("/api/dangerclose", async (req, res) => {
     }
 })
 
+
+app.get("/api/pilots/:serNum", async (req, res) => {
+    try {
+        const serNum = req.params.serNum
+        console.log("serNum:" + serNum)
+        const response = await axios.get(`https://assignemts.reaktor.com/birdnest/pilots/${serNum}`)
+        res.json(response) 
+    } catch (ex) {
+        res.status(500).send('Error fetching data')
+    }
+})
+
 const isWithinRadius = (y1, x1, y2, x2, radius) => {
     y1 = deg2rad(y1)
     x1 = deg2rad(x1)
@@ -65,6 +77,8 @@ const isWithinRadius = (y1, x1, y2, x2, radius) => {
   }
   
   const checkDrones = (drones) => {
+    // Given information implies that the scale is in millimeters i.e 0-500000mm,
+    // thus 100m = 100*(10^-3)=100000
     var violate = []
     var i
     var radius = 100000

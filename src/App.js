@@ -10,7 +10,7 @@ const App = () => {
   return (
     <>
       <Header />
-      <DroneData />
+      <Drone  />
       <Footer />
     </>
   )

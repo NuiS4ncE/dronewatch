@@ -15,9 +15,6 @@ class Pilot extends React.Component {
     componentDidMount = async () => {
         const pilots = []
         console.log("props in Pilot.js: " + JSON.stringify(this.props.props))
-        //console.log("prop at index 0: " + this.props.props[0].serialNumber._text) 
-        //console.log("prop at index 1: " + this.props.props[1].serialNumber._text)
-        //console.log("prop at index 2: " + this.props.props[2].serialNumber._text)
         this.interval = setInterval(async () => {
             for (let i = 0; i < this.props.props.length; i++) {
                 pilots.push(await pilotService.getInfoOf(this.props.props[i].serialNumber._text))

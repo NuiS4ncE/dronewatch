@@ -36,11 +36,27 @@ app.get("/api/dangerclose", async (req, res) => {
     }
   })
 
+app.get("/api/pilots", async (req, res) => {
+  pilots = []
+  //console.log("starting for loop to fetch stuff")
+  try {
+    const dangerclose = await fetchDangerClose()
+    //console.log("dangerclose: " + JSON.stringify(dangerclose))
+    for (let i = 0; i < dangerclose.length; i++) {
+      //console.log("indexes: " + dangerclose[i].serialNumber._text)
+      const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${dangerclose[i].serialNumber._text}`)
+      pilots.push(response.data)
+    }
+    res.json(pilots)
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+})
 
 app.get("/api/pilots/:serNum", async (req, res) => {
     try {
         const serNum = req.params.serNum
-        console.log("serNum: " + serNum)
+        //console.log("serNum: " + serNum)
         const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${serNum}`)
         //console.log("serNum JSON.stringify(): " + JSON.stringify(response.data))
         res.json(response.data)
@@ -63,7 +79,30 @@ const fetchDangerClose = () => {
       })
   }
 
-const isWithinRadius = (y1, x1, y2, x2, radius) => {
+const checkDrones = (drones) => {
+    // Given information implies that the scale is in millimeters i.e 0-500000mm,
+    // thus 100m = 100*(10^-3)=100000
+    var violate = []
+    var i
+    var radius = 100000
+    var nestY = 250000
+    var nestX = 250000
+    for(i=0; i < drones.length; i++){
+      if(isWithinRange(nestX, nestY, Number(drones[i].positionX._text), Number(drones[i].positionY._text), radius)) {
+        //console.log("Found a model/models!")
+        //console.log(drones[i].model._text)
+        violate.push(drones[i])
+      }
+    }
+    return violate
+}
+
+const isWithinRange = (x1, y1, x2, y2, range) => {
+  const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  return distance < range;
+}
+
+/*const isWithinRadius = (y1, x1, y2, x2, radius) => {
     y1 = deg2rad(y1)
     x1 = deg2rad(x1)
     y2 = deg2rad(y2)
@@ -74,17 +113,17 @@ const isWithinRadius = (y1, x1, y2, x2, radius) => {
     Math.cos(y1) * Math.cos(y2) * 
     Math.sin((x2-x1)/2) * Math.sin((x2-x1))
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-    const distance = 6371 * c
+    const distance = 100000 * c
   
     return distance <= radius
   
-  }
+  }*/
   
-  const deg2rad = (deg) => {
+  /*const deg2rad = (deg) => {
     return deg * (Math.PI/100)
-  }
+  }*/
   
-  const checkDrones = (drones) => {
+  /*const checkDrones = (drones) => {
     // Given information implies that the scale is in millimeters i.e 0-500000mm,
     // thus 100m = 100*(10^-3)=100000
     var violate = []
@@ -100,7 +139,7 @@ const isWithinRadius = (y1, x1, y2, x2, radius) => {
       }
     }
     return violate
-  }
+  }*/
 
 
 console.log('Backend running')

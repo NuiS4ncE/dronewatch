@@ -29,31 +29,37 @@ app.get("/api/drones", async (req, res) => {
 
 app.get("/api/dangerclose", async (req, res) => {
     try {
-        const response = await axios.get('https://assignments.reaktor.com/birdnest/drones')
-        const data = JSON.parse(convert.xml2json(response.data, { compact: true, spaces: 2}))
-        const dronesdata = data.report.capture.drone
-        //console.log("dronesdata: ")
-        //console.log(dronesdata)
-        const dangerclose = checkDrones(dronesdata)
-        //console.log("dangerclose: ")
-        //console.log(dangerclose)
-        res.json(dangerclose)
-    } catch (ex) {
-        res.status(500).send('Error fetching data')
+      const dangerclose = await fetchDangerClose()
+      res.json(dangerclose)
+    } catch (error) {
+      res.status(500).send(error.message)
     }
-})
+  })
 
 
 app.get("/api/pilots/:serNum", async (req, res) => {
     try {
         const serNum = req.params.serNum
         console.log("serNum:" + serNum)
-        const response = await axios.get(`https://assignemts.reaktor.com/birdnest/pilots/${serNum}`)
+        const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${serNum}`)
         res.json(response) 
     } catch (ex) {
         res.status(500).send('Error fetching data')
     }
 })
+
+const fetchDangerClose = () => {
+    return axios.get('https://assignments.reaktor.com/birdnest/drones')
+      .then(response => {
+        const data = JSON.parse(convert.xml2json(response.data, { compact: true, spaces: 2}))
+        const dronesdata = data.report.capture.drone
+        return checkDrones(dronesdata)
+      })
+      .catch(error => {
+        console.error(error)
+        throw new Error('Error fetching data')
+      })
+  }
 
 const isWithinRadius = (y1, x1, y2, x2, radius) => {
     y1 = deg2rad(y1)

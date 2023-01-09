@@ -10,14 +10,10 @@ class Pilot extends React.Component {
     }
 
     state = {
-        pilots: []
+        pilots: [],
     }
     componentDidMount = async () => {
         const pilots = []
-        // const sernums = []
-        /*for (let j = 0; j < this.props.props.length; j++){
-            sernums.push()
-        }*/
         console.log("props in Pilot.js: " + JSON.stringify(this.props.props))
         //console.log("prop at index 0: " + this.props.props[0].serialNumber._text) 
         //console.log("prop at index 1: " + this.props.props[1].serialNumber._text)
@@ -29,7 +25,11 @@ class Pilot extends React.Component {
             }
             this.setState({ pilots })
         }, 2000)
-        console.log("pilots at Pilot: " + this.state.pilots)
+        /*this.interval = setInterval(async () => {
+            pilots.push(await pilotService.getInfoOf("SN-S4JneZ6-ed"))
+            this.setState({ pilots })
+        }, 2000)*/
+        //console.log("pilots at Pilot: " + JSON.stringify(this.state.pilots))
     }
 
     componentWillUnmount() {
@@ -40,6 +40,7 @@ class Pilot extends React.Component {
         if (this.state.pilots === undefined) {
             return "No pilots found"
         }
+        console.log("in render: " + JSON.stringify(this.state.pilots))
         return (
             <>
                 <div className="drones-container">
@@ -54,28 +55,28 @@ class Pilot extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                        {this.state.pilots.map((data, key) => {
-                            return (
-                                <tr key={key}>
-                                    <td>
-                                        <h5>{data.lastName}</h5>
-                                    </td>
-                                    <td>
-                                        <h5>{data.firstName}</h5>
-                                    </td>
-                                    <td>
-                                        <h5>{data.phoneNumber}</h5>
-                                    </td>
-                                    <td>
-                                        <h5>{data.email}</h5>
-                                    </td>
-                                </tr>
+                            {this.state.pilots.map((data, key) => {
+                                return (
+                                    <tr key={key}>
+                                        <td>
+                                            <h5>{data.lastName}</h5>
+                                        </td>
+                                        <td>
+                                            <h5>{data.firstName}</h5>
+                                        </td>
+                                        <td>
+                                            <h5>{data.phoneNumber}</h5>
+                                        </td>
+                                        <td>
+                                            <h5>{data.email}</h5>
+                                        </td>
+                                    </tr>
 
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </>
         )
     }

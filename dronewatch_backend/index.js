@@ -40,9 +40,11 @@ app.get("/api/dangerclose", async (req, res) => {
 app.get("/api/pilots/:serNum", async (req, res) => {
     try {
         const serNum = req.params.serNum
-        console.log("serNum:" + serNum)
+        console.log("serNum: " + serNum)
         const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${serNum}`)
-        res.json(response) 
+        //console.log("serNum JSON.stringify(): " + JSON.stringify(response.data))
+        res.json(response.data)
+        //console.log("serNum res: " + res) 
     } catch (ex) {
         res.status(500).send('Error fetching data')
     }

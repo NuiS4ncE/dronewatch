@@ -5,6 +5,7 @@ const axios = require('axios')
 const convert = require("xml-js")
 const mongoose = require('mongoose')
 require('dotenv').config()
+const Pilot = require('./models/pilot')
 
 app.use(cors())
 
@@ -49,8 +50,10 @@ app.get("/api/pilots", async (req, res) => {
       const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${dangerclose[i].serialNumber._text}`)
       pilots.push(response.data)
     }
-    const dbData = handleDuplicates(pilots)
-    res.json(pilots)
+    addToDb(pilots)
+    getFromDb().then((pilotData) => {
+      res.json(pilotData)
+    })
   } catch (error) {
     res.status(500).send(error.message)
   }
@@ -69,7 +72,58 @@ app.get("/api/pilots/:serNum", async (req, res) => {
   }
 })
 
-const handleDuplicates = (pilots) => {
+const getFromDb = () => {
+  //const Pilot = mongoose.model('Pilot', pilotSchema)
+  return Pilot.find().then((pilots) => {
+    console.log("Found pilots: " + JSON.stringify(pilots))
+    return pilots
+  }).catch((err) => {
+    console.log(err)
+  })
+}
+
+const addToDb = (pilots) => {
+  //const Pilot = mongoose.model('Pilot', pilotSchema)
+  //const pilots = JSON.stringify(pilotdata)
+  console.log("pilots in beginning of addToDb: " + JSON.stringify(pilots))
+  const currentTime = Date()
+  for(const pilot of pilots) {
+  Pilot.findOne({ pilotId: pilot.pilotId }).then((doc) => {
+    if (doc) {
+      const newTTL = 600
+      const query = { pilotId: pilot.pilotId }
+      const update = { createdAt: newDate() }
+      const options = {
+        new: true,
+        expiresAfterSeconds: newTTL,
+      }
+
+      findOneAndUpdate(query, update, options).then((updatedDoc) => {
+        console.log("updatedDoc: " + updatedDoc)
+      }).catch((err) => {
+        console.log(err)
+      })
+    } else {
+      console.log("pilots after else: " + JSON.stringify(pilots))
+      const newPilot = new Pilot({
+        pilotId: pilot.pilotId,
+        firstName: pilot.firstName,
+        lastName: pilot.lastName,
+        phoneNumber: pilot.phoneNumber,
+        createdDt: pilot.createdDt,
+        email: pilot.email,
+        createdAt: {
+          type: currentTime,
+          expires: 600,
+        }
+      })
+
+      newPilot.save()
+    }
+  }).catch((err) => {
+    console.log(err)
+  })
+}
 
 }
 
@@ -112,7 +166,7 @@ const isWithinRange = (x1, y1, x2, y2, range) => {
 
 console.log('Backend running')
 
-const PORT = 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

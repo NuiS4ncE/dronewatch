@@ -98,49 +98,10 @@ const checkDrones = (drones) => {
 }
 
 const isWithinRange = (x1, y1, x2, y2, range) => {
+  // Euclidean distance
   const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
   return distance < range;
 }
-
-/*const isWithinRadius = (y1, x1, y2, x2, radius) => {
-    y1 = deg2rad(y1)
-    x1 = deg2rad(x1)
-    y2 = deg2rad(y2)
-    x2 = deg2rad(x2)
-  
-    // Haversine formula
-    const a = Math.sin((y2-y1)/2) * Math.sin((y2-y1)/2) + 
-    Math.cos(y1) * Math.cos(y2) * 
-    Math.sin((x2-x1)/2) * Math.sin((x2-x1))
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-    const distance = 100000 * c
-  
-    return distance <= radius
-  
-  }*/
-  
-  /*const deg2rad = (deg) => {
-    return deg * (Math.PI/100)
-  }*/
-  
-  /*const checkDrones = (drones) => {
-    // Given information implies that the scale is in millimeters i.e 0-500000mm,
-    // thus 100m = 100*(10^-3)=100000
-    var violate = []
-    var i
-    var radius = 100000
-    var nestY = 250000
-    var nestX = 250000
-    for(i=0; i < drones.length; i++){
-      if(isWithinRadius(nestY, nestX, Number(drones[i].positionY._text), Number(drones[i].positionX._text), radius)) {
-        //console.log("Found a model/models!")
-        //console.log(drones[i].model._text)
-        violate.push(drones[i])
-      }
-    }
-    return violate
-  }*/
-
 
 console.log('Backend running')
 

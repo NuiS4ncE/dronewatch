@@ -98,13 +98,14 @@ const addToDb = (pilots) => {
         expiresAfterSeconds: newTTL,
       }
 
-      findOneAndUpdate(query, update, options).then((updatedDoc) => {
-        console.log("updatedDoc: " + updatedDoc)
+      Pilot.findOneAndUpdate(query, update, options).then((updatedDoc) => {
+        console.log("document updated!")
+        //console.log("updatedDoc: " + updatedDoc)
       }).catch((err) => {
         console.log(err)
       })
     } else {
-      console.log("pilots after else: " + JSON.stringify(pilots))
+      //console.log("pilots after else: " + JSON.stringify(pilots))
       const newPilot = new Pilot({
         pilotId: pilot.pilotId,
         firstName: pilot.firstName,

@@ -1,32 +1,18 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
-import { initializePilot } from '../reducers/pilot'
 import pilotService from '../services/pilots'
 
 class Pilot extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     state = {
         pilots: [],
     }
+    
     componentDidMount = async () => {
-        const pilots = []
-        console.log("props in Pilot.js: " + JSON.stringify(this.props.props))
         this.interval = setInterval(async () => {
-            for (let i = 0; i < this.props.props.length; i++) {
-                pilots.push(await pilotService.getInfoOf(this.props.props[i].serialNumber._text))
-                console.log("for loop sernum: " + this.props.props[i].serialNumber._text)
-            }
-            this.setState({ pilots })
+            const pilotData = pilotService.getViolatingPilots()
+            console.log("pilotData: " + JSON.stringify(pilotData))
+            this.setState({ pilots: pilotData })
         }, 2000)
-        /*this.interval = setInterval(async () => {
-            pilots.push(await pilotService.getInfoOf("SN-S4JneZ6-ed"))
-            this.setState({ pilots })
-        }, 2000)*/
-        //console.log("pilots at Pilot: " + JSON.stringify(this.state.pilots))
     }
 
     componentWillUnmount() {

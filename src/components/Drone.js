@@ -1,6 +1,4 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
-import { initializeDrone, initializeViolators } from '../reducers/drone'
 import droneService from '../services/drones'
 import Pilot from './Pilot'
 
@@ -12,13 +10,13 @@ class Drone extends React.Component {
     }
 
     componentDidMount = async () => {
-        const drones = await droneService.getInfo()
+        /* const drones = await droneService.getInfo()
         this.setState({ drones })
 
         this.interval = setInterval(async () => {
             const violators = await droneService.getViolatorDrones()
             this.setState({ violators })
-        }, 2000)
+        }, 2000) */
     }
 
     componentWillUnmount() {

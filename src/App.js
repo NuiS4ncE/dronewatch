@@ -1,15 +1,13 @@
 import './App.css';
-import { useState, useEffect } from 'react'
 import Drone from './components/Drone'
-import axios from 'axios'
-import droneService from './services/drones'
-import pilotService from './services/pilots'
+import Pilot from './components/Pilot'
 
 const App = () => {
   console.log("App rendering")
   return (
     <>
       <Header />
+      <Pilot />
       <Drone  />
       <Footer />
     </>

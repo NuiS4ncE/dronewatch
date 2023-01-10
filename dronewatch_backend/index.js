@@ -92,7 +92,7 @@ const addToDb = (pilots) => {
     if (doc) {
       const newTTL = 600
       const query = { pilotId: pilot.pilotId }
-      const update = { createdAt: newDate() }
+      const update = { createdAt: Date.now() }
       const options = {
         new: true,
         expiresAfterSeconds: newTTL,
@@ -112,12 +112,8 @@ const addToDb = (pilots) => {
         phoneNumber: pilot.phoneNumber,
         createdDt: pilot.createdDt,
         email: pilot.email,
-        createdAt: {
-          type: currentTime,
-          expires: 600,
-        }
+        createdAt: Date.now(),
       })
-
       newPilot.save()
     }
   }).catch((err) => {

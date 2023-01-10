@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const url = process.env.MONGODB_URI;
 
 mongoose.connect(url).then((result) => {
@@ -17,9 +16,12 @@ const pilotSchema = new mongoose.Schema({
   email: String,
   createdAt: {
     type: Date,
-    expires: Date.now() + 10 * 60 * 1000, 
+    expires: '600s', 
   },
 });
+
+pilotSchema.index({ createdAt: 1 }, { expireAfterSeconds: 600 })
+
 
 pilotSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -29,12 +31,4 @@ pilotSchema.set('toJSON', {
   },
 });
 
-const Pilot = mongoose.model('Pilot', pilotSchema);
-
-Pilot.createIndex({ "createdAt": 1 }, { expireAfterSeconds: 600 }).then(() => {
-  console.log('TTL index created on createdAt field');
-}).catch((error) => {
-  console.error(error);
-});
-
-module.exports = Pilot;
+module.exports = mongoose.model('Pilot', pilotSchema)

@@ -8,6 +8,8 @@ class Pilot extends React.Component {
     }
     
     componentDidMount = async () => {
+        //const pilotData = await pilotService.getViolatingPilots()
+        //this.setState({ pilots: pilotData })
         this.interval = setInterval(async () => {
             const pilotData = await pilotService.getViolatingPilots()
             //console.log("pilotData: " + JSON.stringify(pilotData))
@@ -35,6 +37,7 @@ class Pilot extends React.Component {
                                 <th> Last name </th>
                                 <th> Phone number </th>
                                 <th> Email </th>
+                                <th> Distance </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,6 +55,9 @@ class Pilot extends React.Component {
                                         </td>
                                         <td>
                                             <h5>{data.email}</h5>
+                                        </td>
+                                        <td>
+                                            <h5>{data.distance}</h5>
                                         </td>
                                     </tr>
 

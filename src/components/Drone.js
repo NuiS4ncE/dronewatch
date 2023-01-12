@@ -5,18 +5,16 @@ import Pilot from './Pilot'
 class Drone extends React.Component {
 
     state = {
-        drones: [],
         violators: [],
     }
 
     componentDidMount = async () => {
-        const drones = await droneService.getInfo()
-        this.setState({ drones })
-
+        //const violators = await droneService.getViolatorDrones()
+        //this.setState({ violators })
         this.interval = setInterval(async () => {
             const violators = await droneService.getViolatorDrones()
             this.setState({ violators })
-        }, 2000) 
+        }, 2000)
     }
 
     componentWillUnmount() {
@@ -42,8 +40,8 @@ class Drone extends React.Component {
                             {this.state.violators.map((data, key) => {
                                 return (
                                     <tr key={key}>
-                                        <td>{data.serialNumber._text}</td>
-                                        <td>{data.model._text}</td>
+                                        <td>{data.serialNumber}</td>
+                                        <td>{data.model}</td>
                                     </tr>
                                 )
                             })}

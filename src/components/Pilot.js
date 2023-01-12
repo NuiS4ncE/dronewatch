@@ -9,8 +9,8 @@ class Pilot extends React.Component {
     
     componentDidMount = async () => {
         this.interval = setInterval(async () => {
-            const pilotData = pilotService.getViolatingPilots()
-            console.log("pilotData: " + JSON.stringify(pilotData))
+            const pilotData = await pilotService.getViolatingPilots()
+            //console.log("pilotData: " + JSON.stringify(pilotData))
             this.setState({ pilots: pilotData })
         }, 2000)
     }
@@ -23,7 +23,7 @@ class Pilot extends React.Component {
         if (this.state.pilots === undefined) {
             return "No pilots found"
         }
-        console.log("in render: " + JSON.stringify(this.state.pilots))
+        //console.log("in render: " + JSON.stringify(this.state.pilots))
         return (
             <>
                 <div className="drones-container">

@@ -10,13 +10,13 @@ class Drone extends React.Component {
     }
 
     componentDidMount = async () => {
-        /* const drones = await droneService.getInfo()
+        const drones = await droneService.getInfo()
         this.setState({ drones })
 
         this.interval = setInterval(async () => {
             const violators = await droneService.getViolatorDrones()
             this.setState({ violators })
-        }, 2000) */
+        }, 2000) 
     }
 
     componentWillUnmount() {
@@ -29,7 +29,6 @@ class Drone extends React.Component {
         }
         return (
             <>
-                <Pilot props={this.state.violators} />
                 <div className="drones-container">
                     <h3>Drones violating nest currently:</h3>
                     <table>

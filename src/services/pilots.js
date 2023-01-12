@@ -16,8 +16,8 @@ const getViolatingPilots = async () => {
     try {
         const url = `${process.env.REACT_APP_API_URL}/pilots`
         const result = await axios.get(url)
-        console.log("result.data: " + result.data)
-        return result
+        //console.log("result.data: " + JSON.stringify(result.data))
+        return result.data
     } catch (ex) {
         console.log(ex)
     }

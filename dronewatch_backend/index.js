@@ -87,40 +87,44 @@ const addToDb = (pilots) => {
   //const pilots = JSON.stringify(pilotdata)
   console.log("pilots in beginning of addToDb: " + JSON.stringify(pilots))
   const currentTime = Date()
-  for(const pilot of pilots) {
-  Pilot.findOne({ pilotId: pilot.pilotId }).then((doc) => {
-    if (doc) {
-      const newTTL = 600
-      const query = { pilotId: pilot.pilotId }
-      const update = { createdAt: Date.now() }
-      const options = {
-        new: true,
-        expiresAfterSeconds: newTTL,
-      }
+  for (const pilot of pilots) {
+    Pilot.findOne({ pilotId: pilot.pilotId }).then((doc) => {
+      if (doc) {
+        const newTTL = 600
+        const query = { pilotId: pilot.pilotId }
+        const update = { expireAt: Date.now() }
+        const options = {
+          new: true,
+          expiresAfterSeconds: newTTL,
+        }
 
-      Pilot.findOneAndUpdate(query, update, options).then((updatedDoc) => {
-        console.log("document updated!")
-        //console.log("updatedDoc: " + updatedDoc)
-      }).catch((err) => {
+        Pilot.findOneAndUpdate(query, update, options).then((updatedDoc) => {
+          console.log("document updated!")
+          //console.log("updatedDoc: " + updatedDoc)
+        }).catch((err) => {
+          console.log(err)
+        })
+      } else {
+        //console.log("pilots after else: " + JSON.stringify(pilots))
+        try {
+          const newPilot = new Pilot({
+            pilotId: pilot.pilotId,
+            firstName: pilot.firstName,
+            lastName: pilot.lastName,
+            phoneNumber: pilot.phoneNumber,
+            createdDt: pilot.createdDt,
+            email: pilot.email,
+            expireAt: Date.now(),
+          }) 
+        newPilot.save()
+      } catch (err) {
         console.log(err)
-      })
-    } else {
-      //console.log("pilots after else: " + JSON.stringify(pilots))
-      const newPilot = new Pilot({
-        pilotId: pilot.pilotId,
-        firstName: pilot.firstName,
-        lastName: pilot.lastName,
-        phoneNumber: pilot.phoneNumber,
-        createdDt: pilot.createdDt,
-        email: pilot.email,
-        createdAt: Date.now(),
-      })
-      newPilot.save()
-    }
-  }).catch((err) => {
-    console.log(err)
-  })
-}
+      }
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
 
 }
 

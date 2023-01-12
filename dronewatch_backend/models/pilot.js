@@ -14,13 +14,14 @@ const pilotSchema = new mongoose.Schema({
   phoneNumber: String,
   createdDt: String,
   email: String,
-  createdAt: {
+  expireAt: {
     type: Date,
-    expires: '600s', 
+    default: Date.now,
+    index: { expires: '600s' }
   },
 });
 
-pilotSchema.index({ createdAt: 1 }, { expireAfterSeconds: 600 })
+pilotSchema.index({ expireAt: 1 }, { expireAfterSeconds: 600 })
 
 
 pilotSchema.set('toJSON', {

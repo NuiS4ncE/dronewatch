@@ -2,19 +2,22 @@ const mongoose = require('mongoose');
 const url = process.env.MONGODB_URI;
 
 mongoose.connect(url).then((result) => {
-  console.log('connected to MongoDB in pilot.js');
+  console.log('connected to MongoDB in drone.js');
 }).catch((error) => {
   console.log('error connecting to MongoDB: ', error.message);
 });
 
-const pilotSchema = new mongoose.Schema({
-  pilotId: String,
-  firstName: String,
-  lastName: String,
-  phoneNumber: String,
-  createdDt: String,
-  email: String,
-  distance: String,
+const droneSchema = new mongoose.Schema({
+  serialNumber: String,
+  model: String,
+  manufacturer: String,
+  mac: String,
+  ipv4: String,
+  ipv6: String,
+  firmware: String,
+  positionY: String,
+  positionX: String,
+  altitude: String,
   expireAt: {
     type: Date,
     default: Date.now,
@@ -22,10 +25,10 @@ const pilotSchema = new mongoose.Schema({
   },
 });
 
-pilotSchema.index({ expireAt: 1 }, { expireAfterSeconds: 600 })
+droneSchema.index({ expireAt: 1 }, { expireAfterSeconds: 600 })
 
 
-pilotSchema.set('toJSON', {
+droneSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
@@ -33,4 +36,4 @@ pilotSchema.set('toJSON', {
   },
 });
 
-module.exports = mongoose.model('Pilot', pilotSchema)
+module.exports = mongoose.model('Drone', droneSchema)

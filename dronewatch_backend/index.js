@@ -186,7 +186,6 @@ const addDronesToDb = (drones) => {
       if (doc) {
         droneTTLUpdate(drone, doc)
       } else {
-        //console.log("drone distance after else: " + JSON.stringify(drone.distance))
         try {
           const newDrone = new Drone({
             serialNumber: drone.serialNumber._text,

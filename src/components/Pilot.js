@@ -37,7 +37,7 @@ class Pilot extends React.Component {
                                 <th> Last name </th>
                                 <th> Phone number </th>
                                 <th> Email </th>
-                                <th> Distance </th>
+                                <th> Distance (in meters) </th>
                             </tr>
                         </thead>
                         <tbody>

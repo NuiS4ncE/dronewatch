@@ -46,7 +46,6 @@ app.get("/api/dangerclose", async (req, res) => {
 
 app.get("/api/pilots", async (req, res) => {
   pilots = []
-  //console.log("starting for loop to fetch stuff")
   try {
     const dangerclose = await fetchDangerClose()
     //console.log("dangerclose: " + JSON.stringify(dangerclose))
@@ -54,8 +53,9 @@ app.get("/api/pilots", async (req, res) => {
       //console.log("indexes: " + dangerclose[i].serialNumber._text)
       const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${dangerclose[i].serialNumber._text}`)
       pilots.push(response.data)
+      pilots[pilots.length - 1].distance = dangerclose[i].distance
     }
-    addPilotsToDb(pilots, dangerclose.distance)
+    addPilotsToDb(pilots)
     getPilotsFromDb().then((pilotData) => {
       res.json(pilotData)
     })
@@ -89,17 +89,17 @@ const getDronesFromDb = () => {
 const getPilotsFromDb = () => {
   //const Pilot = mongoose.model('Pilot', pilotSchema)
   return Pilot.find().then((pilots) => {
-    console.log("Found pilots: " + JSON.stringify(pilots))
+    //console.log("Found pilots: " + JSON.stringify(pilots))
     return pilots
   }).catch((err) => {
     console.log(err)
   })
 }
 
-const addPilotsToDb = (pilots, distance) => {
+const addPilotsToDb = (pilots) => {
   //const Pilot = mongoose.model('Pilot', pilotSchema)
   //const pilots = JSON.stringify(pilotdata)
-  console.log("pilots in beginning of addPilotsToDb: " + JSON.stringify(pilots) + " and distance " + distance.toString())
+  //console.log("pilots in beginning of addPilotsToDb: " + JSON.stringify(pilots))
   for (const pilot of pilots) {
     Pilot.findOne({ pilotId: pilot.pilotId }).then((doc) => {
       if (doc) {
@@ -114,7 +114,7 @@ const addPilotsToDb = (pilots, distance) => {
             phoneNumber: pilot.phoneNumber,
             createdDt: pilot.createdDt,
             email: pilot.email,
-            distance: distance,
+            distance: pilot.distance,
             expireAt: Date.now(),
           })
           newPilot.save()
@@ -138,9 +138,21 @@ const pilotTTLUpdate = (pilot, doc) => {
     new: true,
     expiresAfterSeconds: newTTL,
   }
-  if (Number(doc.distance) > Number(distance)) {
-    console.log("changing distance from " + doc.distance + " to " + distance)
-    const update = { distance: distance, expireAt: Date.now() }
+  if (Number(doc.distance) > Number(pilot.distance)) {
+    console.log("changing distance")
+    const newTTL = 600
+    const query = { pilotId: pilot.pilotId }
+    const update = { distance: pilot.distance, expireAt: Date.now() }
+    const options = {
+      new: true,
+      expiresAfterSeconds: newTTL,
+    }
+    Pilot.findOneAndUpdate(query, update, options).then((updatedDoc) => {
+      console.log("pilot document updated!")
+      //console.log("updatedDoc: " + updatedDoc)
+    }).catch((err) => {
+      console.log(err)
+    })
   }
   Pilot.findOneAndUpdate(query, update, options).then((updatedDoc) => {
     console.log("pilot document updated!")
@@ -168,13 +180,13 @@ const droneTTLUpdate = (drone, doc) => {
 }
 
 const addDronesToDb = (drones) => {
-  console.log("drones in beginning of addDronesToDb: " + JSON.stringify(drones))
+  //console.log("drones in beginning of addDronesToDb: " + JSON.stringify(drones))
   for (const drone of drones) {
     Drone.findOne({ serialNumber: drone.serialNumber._text }).then((doc) => {
       if (doc) {
         droneTTLUpdate(drone, doc)
       } else {
-        console.log("drone distance after else: " + JSON.stringify(drone.distance))
+        //console.log("drone distance after else: " + JSON.stringify(drone.distance))
         try {
           const newDrone = new Drone({
             serialNumber: drone.serialNumber._text,

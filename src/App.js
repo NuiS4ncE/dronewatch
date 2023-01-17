@@ -6,7 +6,7 @@ import Pilot from './components/Pilot'
 
 const App = () => {
   console.log("App rendering")
-  //     
+  //    
   return (
     <Provider store={store}>
       <Header />

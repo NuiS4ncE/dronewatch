@@ -1,4 +1,4 @@
-# fly.toml file generated for dronewatch on 2023-01-12T20:45:25+02:00
+# fly.toml file generated for dronewatch on 2023-01-18T00:18:36+02:00
 
 app = "dronewatch"
 kill_signal = "SIGINT"

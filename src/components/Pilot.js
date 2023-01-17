@@ -1,83 +1,63 @@
-import React from 'react'
-import pilotService from '../services/pilots'
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchViolatorPilots } from '../reducers/pilot'
 
-class Pilot extends React.Component {
+const Pilot = () => {  
+    const violators = useSelector(state => state.pilot.violators)
+    const dispatch = useDispatch()
 
-    state = {
-        pilots: [],
-        error: null,
-        previousData: []
-    }
-    
-    componentDidMount = async () => {
-        //const pilotData = await pilotService.getViolatingPilots()
-        //this.setState({ pilots: pilotData })
-        try {
-        this.interval = setInterval(async () => {
-            const pilotData = await pilotService.getViolatingPilots()
-            //console.log("pilotData: " + JSON.stringify(pilotData))
-            this.setState({ pilots: pilotData, previousData: pilotData })
+    useEffect(() => {
+        dispatch(fetchViolatorPilots())
+        const interval = setInterval(() => {
+            dispatch(fetchViolatorPilots())
         }, 2000)
-    } catch(err) {
-        this.setState({error: err.message, pilots: this.state.previousData})
-    }
-    }
+    }, [dispatch])
 
-    componentWillUnmount() {
-        clearInterval(this.interval)
-    }
+    //console.log("violators in Pilot.js: " + JSON.stringify(violators))
 
-    render() {
-        if (this.state.error) {
-            return "Error"
-        }
-        if (this.state.pilots === undefined || this.state.pilots.length === 0) {
-            return "No pilots found"
-        }
-        //console.log("in render: " + JSON.stringify(this.state.pilots))
-        return (
-            <>
-                <div className="drones-container">
-                    <h3>Violating pilots' information:</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th> First name </th>
-                                <th> Last name </th>
-                                <th> Phone number </th>
-                                <th> Email </th>
-                                <th> Distance (in meters) </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.pilots.map((data, key) => {
-                                return (
-                                    <tr key={key}>
-                                        <td>
-                                            <h5>{data.lastName}</h5>
-                                        </td>
-                                        <td>
-                                            <h5>{data.firstName}</h5>
-                                        </td>
-                                        <td>
-                                            <h5>{data.phoneNumber}</h5>
-                                        </td>
-                                        <td>
-                                            <h5>{data.email}</h5>
-                                        </td>
-                                        <td>
-                                            <h5>{data.distance}</h5>
-                                        </td>
-                                    </tr>
+    return (
+        <>
+            <div className="drones-container">
+                <h3>Violating pilots' information:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th> First name </th>
+                            <th> Last name </th>
+                            <th> Phone number </th>
+                            <th> Email </th>
+                            <th> Distance (in meters) </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {violators.map((data, key) => {
+                            return (
+                                <tr key={key}>
+                                    <td>
+                                        <h5>{data.lastName}</h5>
+                                    </td>
+                                    <td>
+                                        <h5>{data.firstName}</h5>
+                                    </td>
+                                    <td>
+                                        <h5>{data.phoneNumber}</h5>
+                                    </td>
+                                    <td>
+                                        <h5>{data.email}</h5>
+                                    </td>
+                                    <td>
+                                        <h5>{data.distance}</h5>
+                                    </td>
+                                </tr>
 
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </>
-        )
-    }
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        </>
+    )
 }
+
 
 export default Pilot

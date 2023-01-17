@@ -1,7 +1,7 @@
 import axios from 'axios'
 const baseURL='/api'
 
-const getInfoOf = async (serNum) => {
+export const getInfoOf = async (serNum) => {
     try {
         console.log("serNum in pilots.js: " + serNum)
         const url = `${process.env.REACT_APP_API_URL}/pilots/${serNum}`
@@ -13,7 +13,7 @@ const getInfoOf = async (serNum) => {
     }
 }
 
-const getViolatingPilots = async () => {
+export const getViolatorPilots = async () => {
     try {
         const url = `${process.env.REACT_APP_API_URL}/pilots`
         const result = await axios.get(url)
@@ -24,6 +24,3 @@ const getViolatingPilots = async () => {
     }
 }
 
-const exportedPilots = { getInfoOf, getViolatingPilots }
-
-export default exportedPilots

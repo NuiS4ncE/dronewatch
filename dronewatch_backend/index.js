@@ -23,10 +23,9 @@ app.get("/api/dronesinfo", async (req, res) => {
 
 app.get("/api/drones", async (req, res) => {
   try {
-    const response = await axios.get('https://assignments.reaktor.com/birdnest/drones')
-    const data = JSON.parse(convert.xml2json(response.data, { compact: true, spaces: 2 }))
-    const dronesdata = data.report.capture.drone
-    res.json(dronesdata)
+    getDronesFromDb().then((droneData) => {
+      res.json(droneData)
+    })
   } catch (ex) {
     res.status(500).send('Error fetching and saving data')
   }
@@ -47,16 +46,6 @@ app.get("/api/dangerclose", async (req, res) => {
 app.get("/api/pilots", async (req, res) => {
   pilots = []
   try {
-      const dangerclose = await fetchDangerClose()
-      //console.log("dangerclose: " + JSON.stringify(dangerclose))
-      for (let i = 0; i < dangerclose.length; i++) {
-        //console.log("indexes: " + dangerclose[i].serialNumber._text)
-        const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${dangerclose[i].serialNumber._text}`)
-        pilots.push(response.data)
-        pilots[pilots.length - 1].distance = dangerclose[i].distance
-        await new Promise((resolve) => setTimeout(resolve, 800))
-      }
-      addPilotsToDb(pilots)
       getPilotsFromDb().then((pilotData) => {
         res.json(pilotData)
       })
@@ -64,6 +53,25 @@ app.get("/api/pilots", async (req, res) => {
     res.status(500).send(error.message)
   }
 })
+
+const fetchPilotsData = async () => {
+  pilots = []
+  try {
+    //console.log("ran fetchPilotsData")
+    const dangerclose = await fetchDangerClose()
+    for (let i = 0; i < dangerclose.length; i++) {
+      const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${dangerclose[i].serialNumber._text}`)
+      pilots.push(response.data)
+      pilots[pilots.length - 1].distance = dangerclose[i].distance
+      await new Promise((resolve) => setTimeout(resolve, 600))
+    }
+    addPilotsToDb(pilots)
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+}
+
+setInterval(fetchPilotsData, 2000)
 
 app.get("/api/pilots/:serNum", async (req, res) => {
   try {
@@ -217,6 +225,7 @@ const fetchDangerClose = () => {
     .then(response => {
       const data = JSON.parse(convert.xml2json(response.data, { compact: true, spaces: 2 }))
       const dronesdata = data.report.capture.drone
+      addDronesToDb(dronesdata)
       return checkDrones(dronesdata)
     })
     .catch(error => {

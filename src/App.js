@@ -1,16 +1,19 @@
 import './App.css';
+import { Provider } from 'react-redux'
+import store from './store'
 import Drone from './components/Drone'
 import Pilot from './components/Pilot'
 
 const App = () => {
   console.log("App rendering")
-  //      <Drone  />
+  //     
   return (
-    <>
+    <Provider store={store}>
       <Header />
       <Pilot />
+      <Drone />
       <Footer />
-    </>
+    </Provider>
   )
 }
 

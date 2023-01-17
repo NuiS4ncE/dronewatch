@@ -5,16 +5,22 @@ class Pilot extends React.Component {
 
     state = {
         pilots: [],
+        error: null,
+        previousData: []
     }
     
     componentDidMount = async () => {
         //const pilotData = await pilotService.getViolatingPilots()
         //this.setState({ pilots: pilotData })
+        try {
         this.interval = setInterval(async () => {
             const pilotData = await pilotService.getViolatingPilots()
             //console.log("pilotData: " + JSON.stringify(pilotData))
-            this.setState({ pilots: pilotData })
+            this.setState({ pilots: pilotData, previousData: pilotData })
         }, 2000)
+    } catch(err) {
+        this.setState({error: err.message, pilots: this.state.previousData})
+    }
     }
 
     componentWillUnmount() {
@@ -22,7 +28,10 @@ class Pilot extends React.Component {
     }
 
     render() {
-        if (this.state.pilots === undefined) {
+        if (this.state.error) {
+            return "Error"
+        }
+        if (this.state.pilots === undefined || this.state.pilots.length === 0) {
             return "No pilots found"
         }
         //console.log("in render: " + JSON.stringify(this.state.pilots))

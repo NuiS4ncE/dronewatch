@@ -34,11 +34,11 @@ app.get("/api/drones", async (req, res) => {
 
 app.get("/api/dangerclose", async (req, res) => {
   try {
-    const dangerclose = await fetchDangerClose()
-    addDronesToDb(dangerclose)
-    getDronesFromDb().then((droneData) => {
-      res.json(droneData)
-    })
+      const dangerclose = await fetchDangerClose()
+      addDronesToDb(dangerclose)
+      getDronesFromDb().then((droneData) => {
+        res.json(droneData)
+      })
   } catch (error) {
     res.status(500).send(error.message)
   }
@@ -47,18 +47,19 @@ app.get("/api/dangerclose", async (req, res) => {
 app.get("/api/pilots", async (req, res) => {
   pilots = []
   try {
-    const dangerclose = await fetchDangerClose()
-    //console.log("dangerclose: " + JSON.stringify(dangerclose))
-    for (let i = 0; i < dangerclose.length; i++) {
-      //console.log("indexes: " + dangerclose[i].serialNumber._text)
-      const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${dangerclose[i].serialNumber._text}`)
-      pilots.push(response.data)
-      pilots[pilots.length - 1].distance = dangerclose[i].distance
-    }
-    addPilotsToDb(pilots)
-    getPilotsFromDb().then((pilotData) => {
-      res.json(pilotData)
-    })
+      const dangerclose = await fetchDangerClose()
+      //console.log("dangerclose: " + JSON.stringify(dangerclose))
+      for (let i = 0; i < dangerclose.length; i++) {
+        //console.log("indexes: " + dangerclose[i].serialNumber._text)
+        const response = await axios.get(`https://assignments.reaktor.com/birdnest/pilots/${dangerclose[i].serialNumber._text}`)
+        pilots.push(response.data)
+        pilots[pilots.length - 1].distance = dangerclose[i].distance
+        await new Promise((resolve) => setTimeout(resolve, 800))
+      }
+      addPilotsToDb(pilots)
+      getPilotsFromDb().then((pilotData) => {
+        res.json(pilotData)
+      })
   } catch (error) {
     res.status(500).send(error.message)
   }

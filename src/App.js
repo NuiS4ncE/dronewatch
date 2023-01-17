@@ -4,11 +4,11 @@ import Pilot from './components/Pilot'
 
 const App = () => {
   console.log("App rendering")
+  //      <Drone  />
   return (
     <>
       <Header />
       <Pilot />
-      <Drone  />
       <Footer />
     </>
   )

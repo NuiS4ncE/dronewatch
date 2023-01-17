@@ -6,15 +6,27 @@ class Drone extends React.Component {
 
     state = {
         violators: [],
+        error: null,
+        previousData: []
     }
 
     componentDidMount = async () => {
-        //const violators = await droneService.getViolatorDrones()
-        //this.setState({ violators })
-        this.interval = setInterval(async () => {
-            const violators = await droneService.getViolatorDrones()
-            this.setState({ violators })
-        }, 2000)
+        const violators = await droneService.getViolatorDrones()
+        this.setState({ violators })
+        try {
+            this.interval = setInterval(async () => {
+                const violators = await droneService.getViolatorDrones()
+                this.setState({ violators, error: null, previousData: violators })
+            }, 2000)
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.error && prevState.error !== this.state.error) {
+            this.setState({ violators: prevState.previousData });
+        }
     }
 
     componentWillUnmount() {
@@ -22,13 +34,16 @@ class Drone extends React.Component {
     }
 
     render() {
-        if (this.state.violators === undefined) {
+        if (this.state.error) {
+            return "Error"
+        }
+        if (this.state.violators === undefined || this.state.violators.length === 0) {
             return "No violators"
         }
         return (
             <>
                 <div className="drones-container">
-                    <h3>Drones violating nest currently:</h3>
+                    <h3>Drones that have violated the nest:</h3>
                     <table>
                         <thead>
                             <tr>

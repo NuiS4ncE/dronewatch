@@ -1,4 +1,4 @@
-App has been deployed to [Fly.io](https://dronewatch.fly.dev/)
+~~App has been deployed to [Fly.io](https://dronewatch.fly.dev/)~~
 
 # Getting Started with Create React App
 

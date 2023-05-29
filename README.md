@@ -1,3 +1,6 @@
+Pre-assignment miniproject for Reaktor summer trainee position. 
+The app fetches data from Reaktor API and checks, if drones are within a circle-shaped no-fly zone inside a map grid and then fetches pilot data. Pilot data is kept on the webpage and database for 10 minutes. 
+
 ~~App has been deployed to [Fly.io](https://dronewatch.fly.dev/)~~
 
 # Getting Started with Create React App
